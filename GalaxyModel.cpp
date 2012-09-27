@@ -41,7 +41,7 @@ void GalaxyModel::fromPrior()
 	gamma = 6*randomU();
 	xc = Data::get_data().get_xMin() + Data::get_data().get_xRange();
 	yc = Data::get_data().get_yMin() + Data::get_data().get_yRange();
-	q = randomU();
+	q = exp(randn());
 	theta = 2.*M_PI*randomU(); cosTheta = cos(theta); sinTheta = sin(theta);
 
 	L1 = exp(log(1E-3) + log(1E6)*randomU());
@@ -56,6 +56,7 @@ void GalaxyModel::fromPrior()
 double GalaxyModel::perturb()
 {
 	int which = randInt(11);
+	double logH = 0.;
 
 	if(which == 0)
 	{
@@ -86,17 +87,23 @@ double GalaxyModel::perturb()
 			Data::get_data().get_xRange()) + Data::get_data().get_xMin();
 		yc = mod(yc - Data::get_data().get_yMin(),
 			Data::get_data().get_yRange()) + Data::get_data().get_yMin();
+		computeImage();
 
 	}
 	else if(which == 4)
 	{
+		q = log(q);
+		logH -= -0.5*q*q;
 		q += pow(10., 1.5 - 6.*randomU())*randn();
-		q = mod(q, 1.);
+		logH += -0.5*q*q;
+		q = exp(q);
+		computeImage();
 	}
 	else if(which == 5)
 	{
 		theta += 2.*M_PI*pow(10., 1.5 - 6.*randomU())*randn();
 		theta = mod(theta, 2.*M_PI); cosTheta = cos(theta); sinTheta = sin(theta);
+		computeImage();
 	}
 	else if(which == 6)
 	{
@@ -132,7 +139,7 @@ double GalaxyModel::perturb()
 		w = mod(w, 1.);
 	}
 
-	return 0.;
+	return logH;
 }
 
 
