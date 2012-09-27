@@ -32,7 +32,7 @@ class GalaxyModel:public DNest3::Model
 		double gamma;	// Slope
 
 		// Residual model
-		double L1, L2, w;
+		double L1, L2, nu1, nu2, w;
 
 		std::vector< std::vector<double> > image;
 		void computeImage();

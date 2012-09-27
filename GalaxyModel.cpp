@@ -22,6 +22,7 @@
 #include "Utils.h"
 #include "Data.h"
 #include <cmath>
+#include <gsl/gsl_sf_gamma.h>
 
 using namespace std;
 using namespace DNest3;
@@ -41,6 +42,8 @@ void GalaxyModel::fromPrior()
 
 	L1 = exp(log(1E-3) + log(1E6)*randomU());
 	L2 = exp(log(1E-3) + log(1E6)*randomU());
+	nu1 = exp(log(30.)*randomU());
+	nu2 = exp(log(30.)*randomU());
 	w = randomU();
 
 	computeImage();
@@ -48,7 +51,7 @@ void GalaxyModel::fromPrior()
 
 double GalaxyModel::perturb()
 {
-	int which = randInt(6);
+	int which = randInt(8);
 
 	if(which == 0)
 	{
@@ -84,6 +87,20 @@ double GalaxyModel::perturb()
 		L2 = mod(L2 - log(1E-3), log(1E6)) + log(1E-3);
 		L2 = exp(L2);
 	}
+	else if(which == 5)
+	{
+		nu1 = log(nu1);
+		nu1 += log(30.)*pow(10., 1.5 - 6.*randomU())*randn();
+		nu1 = mod(nu1, log(30.));
+		nu1 = exp(nu1);
+	}
+	else if(which == 6)
+	{
+		nu2 = log(nu2);
+		nu2 += log(30.)*pow(10., 1.5 - 6.*randomU())*randn();
+		nu2 = mod(nu2, log(30.));
+		nu2 = exp(nu2);
+	}
 	else
 	{
 		w += pow(10., 1.5 - 6.*randomU())*randn();
@@ -99,6 +116,13 @@ double GalaxyModel::logLikelihood() const
 
 	double logL = 0.;
 
+	double terms1 = gsl_sf_lngamma(0.5*(nu1 + 1.))
+					- 0.5*log(nu1*M_PI) - gsl_sf_lngamma(0.5*nu1)
+					- log(L1);
+	double terms2 = gsl_sf_lngamma(0.5*(nu2 + 1.))
+					- 0.5*log(nu2*M_PI) - gsl_sf_lngamma(0.5*nu2)
+					- log(L2);
+
 	double diff;
 	for(int i=0; i<200; i++)
 	{
@@ -106,9 +130,16 @@ double GalaxyModel::logLikelihood() const
 		{
 			diff = Data::get_data()(i, j) - image[i][j];
 			if(diff > 0)
-				logL += log(w) - log(L2) - diff/L2;
+			{
+				logL += log(w) + terms1 - 0.5*(nu1 + 1.)*
+					(1. + pow(diff/L1, 2)/nu1);
+			}
 			else
-				logL += log(1.-w) - log(L1) + diff/L1; 
+			{
+				diff *= -1.;
+				logL += log(1. - w) + terms2 - 0.5*(nu2 + 1.)*
+					(1. + pow(diff/L2, 2)/nu2); 
+			}
 		}
 	}
 
@@ -138,11 +169,11 @@ void GalaxyModel::computeImage()
 
 void GalaxyModel::print(std::ostream& out) const
 {
-	out<<rho<<' '<<rc<<' '<<gamma<<' '<<L1<<' '<<L2<<' '<<w;
+	out<<rho<<' '<<rc<<' '<<gamma<<' '<<L1<<' '<<L2<<' '<<nu1<<' '<<nu2<<' '<<w;
 }
 
 string GalaxyModel::description() const
 {
-	return string("rho, rc, gamma");
+	return string("rho, rc, gamma, L1, L2, nu1, nu2, w");
 }
 
