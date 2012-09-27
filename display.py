@@ -1,6 +1,6 @@
 from pylab import *
 
-posterior_sample = atleast_2d(loadtxt('sample.txt'))
+posterior_sample = atleast_2d(loadtxt('posterior_sample.txt'))
 fake_data = loadtxt('fake_data.txt')
 
 num = 200
