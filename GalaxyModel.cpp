@@ -39,6 +39,8 @@ void GalaxyModel::fromPrior()
 	rho = exp(log(1E-3) + log(1E6)*randomU());
 	rc = randomU();
 	gamma = 6*randomU();
+	xc = Data::get_data().get_xMin() + Data::get_data().get_xRange();
+	yc = Data::get_data().get_yMin() + Data::get_data().get_yRange();
 
 	L1 = exp(log(1E-3) + log(1E6)*randomU());
 	L2 = exp(log(1E-3) + log(1E6)*randomU());
@@ -51,7 +53,7 @@ void GalaxyModel::fromPrior()
 
 double GalaxyModel::perturb()
 {
-	int which = randInt(8);
+	int which = randInt(9);
 
 	if(which == 0)
 	{
@@ -75,26 +77,37 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 3)
 	{
+		double scale = pow(10., 1.5 - 6.*randomU())*randn();
+		xc += Data::get_data().get_xRange()*scale*randn();
+		yc += Data::get_data().get_yRange()*scale*randn();
+		xc = mod(xc - Data::get_data().get_xMin(),
+			Data::get_data().get_xRange()) + Data::get_data().get_xMin();
+		yc = mod(yc - Data::get_data().get_yMin(),
+			Data::get_data().get_yRange()) + Data::get_data().get_yMin();
+
+	}
+	else if(which == 4)
+	{
 		L1 = log(L1);
 		L1 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L1 = mod(L1 - log(1E-3), log(1E6)) + log(1E-3);
 		L1 = exp(L1);
 	}
-	else if(which == 4)
+	else if(which == 5)
 	{
 		L2 = log(L2);
 		L2 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L2 = mod(L2 - log(1E-3), log(1E6)) + log(1E-3);
 		L2 = exp(L2);
 	}
-	else if(which == 5)
+	else if(which == 6)
 	{
 		nu1 = log(nu1);
 		nu1 += log(30./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
 		nu1 = mod(nu1 - log(0.1), log(30./0.1)) + log(0.1);
 		nu1 = exp(nu1);
 	}
-	else if(which == 6)
+	else if(which == 7)
 	{
 		nu2 = log(nu2);
 		nu2 += log(30./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
@@ -160,16 +173,15 @@ void GalaxyModel::computeImage()
 		{
 			x = -1. + (j + 0.5)*dx;
 
-			r = sqrt(x*x + y*y);
+			r = sqrt(pow(x - xc, 2) + pow(y - yc, 2));
 			image[i][j] = rho/pow(1 + r/rc, gamma);
-
 		}
 	}
 }
 
 void GalaxyModel::print(std::ostream& out) const
 {
-	out<<rho<<' '<<rc<<' '<<gamma<<' '<<L1<<' '<<L2<<' '<<nu1<<' '<<nu2<<' '<<w;
+	out<<rho<<' '<<rc<<' '<<gamma<<' '<<xc<<' '<<yc<<' '<<L1<<' '<<L2<<' '<<nu1<<' '<<nu2<<' '<<w;
 }
 
 string GalaxyModel::description() const
