@@ -28,7 +28,7 @@ using namespace std;
 using namespace DNest3;
 
 GalaxyModel::GalaxyModel()
-:image(200, vector<double>(200))
+:image(Data::get_data().get_ni(), vector<double>(Data::get_data().get_nj()))
 {
 
 }
@@ -156,9 +156,9 @@ double GalaxyModel::logLikelihood() const
 					- log(L2);
 
 	double diff;
-	for(int i=0; i<200; i++)
+	for(size_t i=0; i<image.size(); i++)
 	{
-		for(int j=0; j<200; j++)
+		for(size_t j=0; j<image[i].size(); j++)
 		{
 			diff = Data::get_data()(i, j) - image[i][j];
 			if(diff > 0)
@@ -180,15 +180,15 @@ double GalaxyModel::logLikelihood() const
 
 void GalaxyModel::computeImage()
 {
-	double dx = 2./200;
-	double dy = 2./200;
+	double dx = Data::get_data().get_dx();
+	double dy = Data::get_data().get_dy();
 
 	double x, y, r, xx, yy;
 
-	for(int i=0; i<200; i++)
+	for(size_t i=0; i<image.size(); i++)
 	{
 		y = 1. - (i + 0.5)*dy;
-		for(int j=0; j<200; j++)
+		for(size_t j=0; j<image[i].size(); j++)
 		{
 			x = -1. + (j + 0.5)*dx;
 
