@@ -1,6 +1,6 @@
 from pylab import *
 
-posterior_sample = atleast_2d(loadtxt('posterior_sample.txt'))
+posterior_sample = atleast_2d(loadtxt('sample.txt'))
 fake_data = loadtxt('fake_data.txt')
 
 num = 200
@@ -9,15 +9,15 @@ x = linspace(-1. + 0.5*L, 1. - 0.5*L, num)
 y = x.copy()
 [x, y] = meshgrid(x, y)
 y = y[::-1]
-r = sqrt(x**2 + y**2)
 
 ion()
 hold(False)
 
 for i in xrange(0, posterior_sample.shape[0]):
-	rho, rc, gamma = posterior_sample[i,0], posterior_sample[i,1], posterior_sample[i,2]
+	rho, rc, gamma, xc, yc = posterior_sample[i,0], posterior_sample[i,1],\
+			 posterior_sample[i,2], posterior_sample[i, 3], posterior_sample[i, 4]
 
-
+	r = sqrt((x - xc)**2 + (y - yc)**2)
 	f = rho/(1. + r/rc)**gamma
 	subplot(1,3,1)
 	imshow(fake_data)
