@@ -31,6 +31,8 @@ class GalaxyModel:public DNest3::Model
 		double rMax;	// Maximum radius
 		double gamma;	// Slope
 		double xc, yc;  // Central position
+		double q;	// Flattening
+		double theta, cosTheta, sinTheta; // Inclination
 
 		// Residual model
 		double L1, L2, nu1, nu2, w;

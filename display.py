@@ -14,10 +14,13 @@ ion()
 hold(False)
 
 for i in xrange(0, posterior_sample.shape[0]):
-	rho, rc, gamma, xc, yc = posterior_sample[i,0], posterior_sample[i,1],\
-			 posterior_sample[i,2], posterior_sample[i, 3], posterior_sample[i, 4]
+	rho, rc, gamma, xc, yc, q, theta = posterior_sample[i,0], posterior_sample[i,1],\
+			 posterior_sample[i,2], posterior_sample[i, 3], posterior_sample[i, 4]\
+			, posterior_sample[i, 5], posterior_sample[i, 6]
 
-	r = sqrt((x - xc)**2 + (y - yc)**2)
+	xx =  cos(theta)*(x - xc) + sin(theta)*(y - yc);
+	yy = -sin(theta)*(x - xc) + cos(theta)*(y - yc);
+	r = sqrt(q*xx**2 + yy**2/q);
 	f = rho/(1. + r/rc)**gamma
 	subplot(1,3,1)
 	imshow(fake_data)

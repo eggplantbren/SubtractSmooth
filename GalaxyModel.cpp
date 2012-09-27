@@ -41,6 +41,8 @@ void GalaxyModel::fromPrior()
 	gamma = 6*randomU();
 	xc = Data::get_data().get_xMin() + Data::get_data().get_xRange();
 	yc = Data::get_data().get_yMin() + Data::get_data().get_yRange();
+	q = randomU();
+	theta = 2.*M_PI*randomU(); cosTheta = cos(theta); sinTheta = sin(theta);
 
 	L1 = exp(log(1E-3) + log(1E6)*randomU());
 	L2 = exp(log(1E-3) + log(1E6)*randomU());
@@ -53,7 +55,7 @@ void GalaxyModel::fromPrior()
 
 double GalaxyModel::perturb()
 {
-	int which = randInt(9);
+	int which = randInt(11);
 
 	if(which == 0)
 	{
@@ -88,33 +90,43 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 4)
 	{
+		q += pow(10., 1.5 - 6.*randomU())*randn();
+		q = mod(q, 1.);
+	}
+	else if(which == 5)
+	{
+		theta += 2.*M_PI*pow(10., 1.5 - 6.*randomU())*randn();
+		theta = mod(theta, 2.*M_PI); cosTheta = cos(theta); sinTheta = sin(theta);
+	}
+	else if(which == 6)
+	{
 		L1 = log(L1);
 		L1 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L1 = mod(L1 - log(1E-3), log(1E6)) + log(1E-3);
 		L1 = exp(L1);
 	}
-	else if(which == 5)
+	else if(which == 7)
 	{
 		L2 = log(L2);
 		L2 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L2 = mod(L2 - log(1E-3), log(1E6)) + log(1E-3);
 		L2 = exp(L2);
 	}
-	else if(which == 6)
+	else if(which == 8)
 	{
 		nu1 = log(nu1);
 		nu1 += log(30./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
 		nu1 = mod(nu1 - log(0.1), log(30./0.1)) + log(0.1);
 		nu1 = exp(nu1);
 	}
-	else if(which == 7)
+	else if(which == 9)
 	{
 		nu2 = log(nu2);
 		nu2 += log(30./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
 		nu2 = mod(nu2 - log(0.1), log(30./0.1)) + log(0.1);
 		nu2 = exp(nu2);
 	}
-	else
+	else if(which == 10)
 	{
 		w += pow(10., 1.5 - 6.*randomU())*randn();
 		w = mod(w, 1.);
@@ -164,7 +176,7 @@ void GalaxyModel::computeImage()
 	double dx = 2./200;
 	double dy = 2./200;
 
-	double x, y, r;
+	double x, y, r, xx, yy;
 
 	for(int i=0; i<200; i++)
 	{
@@ -173,7 +185,9 @@ void GalaxyModel::computeImage()
 		{
 			x = -1. + (j + 0.5)*dx;
 
-			r = sqrt(pow(x - xc, 2) + pow(y - yc, 2));
+			xx =  cosTheta*(x - xc) + sinTheta*(y - yc);
+			yy = -sinTheta*(x - xc) + cosTheta*(y - yc);
+			r = sqrt(q*pow(xx, 2) + pow(yy, 2)/q);
 			image[i][j] = rho/pow(1 + r/rc, gamma);
 		}
 	}
@@ -181,11 +195,12 @@ void GalaxyModel::computeImage()
 
 void GalaxyModel::print(std::ostream& out) const
 {
-	out<<rho<<' '<<rc<<' '<<gamma<<' '<<xc<<' '<<yc<<' '<<L1<<' '<<L2<<' '<<nu1<<' '<<nu2<<' '<<w;
+	out<<rho<<' '<<rc<<' '<<gamma<<' '<<xc<<' '<<yc<<' '<<q<<' '<<theta<<
+			' '<<L1<<' '<<L2<<' '<<nu1<<' '<<nu2<<' '<<w;
 }
 
 string GalaxyModel::description() const
 {
-	return string("rho, rc, gamma, L1, L2, nu1, nu2, w");
+	return string("rho, rc, gamma, xc, yc, q, theta, L1, L2, nu1, nu2, w");
 }
 
