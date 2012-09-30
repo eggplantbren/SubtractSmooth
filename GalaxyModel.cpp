@@ -160,17 +160,20 @@ double GalaxyModel::logLikelihood() const
 	{
 		for(size_t j=0; j<image[i].size(); j++)
 		{
-			diff = Data::get_data()(i, j) - image[i][j];
-			if(diff > 0)
+			if(Data::get_data()(i, j) > -1E250)
 			{
-				logL += log(w) + terms1 - 0.5*(nu1 + 1.)*
-					(1. + pow(diff/L1, 2)/nu1);
-			}
-			else
-			{
-				diff *= -1.;
-				logL += log(1. - w) + terms2 - 0.5*(nu2 + 1.)*
-					(1. + pow(diff/L2, 2)/nu2); 
+				diff = Data::get_data()(i, j) - image[i][j];
+				if(diff > 0)
+				{
+					logL += log(w) + terms1 - 0.5*(nu1 + 1.)*
+						(1. + pow(diff/L1, 2)/nu1);
+				}
+				else
+				{
+					diff *= -1.;
+					logL += log(1. - w) + terms2 - 0.5*(nu2 + 1.)*
+						(1. + pow(diff/L2, 2)/nu2); 
+				}
 			}
 		}
 	}

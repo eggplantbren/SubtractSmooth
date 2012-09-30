@@ -26,7 +26,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	Data::load_data("fake_data.txt");
+	Data::load_data("data.txt");
 	DNest3::start_mt< GalaxyModel >(argc, argv);
 	return 0;
 }
