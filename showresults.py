@@ -16,7 +16,7 @@
 #    along with DNest.  If not, see <http://www.gnu.org/licenses/>.
 
 import postprocess
-postprocess.postprocess(10)
+postprocess.postprocess(cut=0.333)
 import display
 
 
