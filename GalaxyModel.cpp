@@ -37,7 +37,7 @@ void GalaxyModel::fromPrior()
 {
 	// Generates initial values from the prior
 	rho = exp(log(1E-3) + log(1E6)*randomU());
-	rc = randomU();
+	rc = exp(log(1E-2) + log(10./1E-2)*randomU());
 	gamma = 6*randomU();
 	xc = Data::get_data().get_xMin() + Data::get_data().get_xRange();
 	yc = Data::get_data().get_yMin() + Data::get_data().get_yRange();
@@ -68,8 +68,10 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 1)
 	{
-		rc += pow(10., 1.5 - 6.*randomU())*randn();
-		rc = mod(rc, 1.);
+		rc = log(rc);
+		rc += log(10./1E-2)*pow(10., 1.5 - 6.*randomU())*randn();
+		rc = mod(rc + log(1E-2), log(10./1E-2)) + log(1E-2);
+		rc = exp(rc);
 		computeImage();
 	}
 	else if(which == 2)
