@@ -36,7 +36,7 @@ for i in xrange(0, posterior_sample.shape[0]):
 
 	title('Model %g'%(i+1))
 	subplot(1,3,3)
-	imshow(data*valid - f)
+	imshow(data*valid - f*valid)
 	title('Residuals')
 	gca().set_xticks([])
 	gca().set_yticks([])
