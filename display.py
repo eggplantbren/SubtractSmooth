@@ -22,7 +22,7 @@ for i in xrange(0, posterior_sample.shape[0]):
 	xx =  cos(theta)*(x - xc) + sin(theta)*(y - yc);
 	yy = -sin(theta)*(x - xc) + cos(theta)*(y - yc);
 	r = sqrt(q*xx**2 + yy**2/q);
-	f = rho/(1. + r/rc)**gamma
+	f = rho*exp(-(r/rc)**gamma)
 	subplot(1,3,1)
 	imshow(data*valid)
 	title('Data')

@@ -200,7 +200,7 @@ void GalaxyModel::computeImage()
 			xx =  cosTheta*(x - xc) + sinTheta*(y - yc);
 			yy = -sinTheta*(x - xc) + cosTheta*(y - yc);
 			r = sqrt(q*pow(xx, 2) + pow(yy, 2)/q);
-			image[i][j] = rho/pow(1 + r/rc, gamma);
+			image[i][j] = rho*exp(-pow(r/rc, gamma));
 		}
 	}
 }
