@@ -46,8 +46,8 @@ void GalaxyModel::fromPrior()
 
 	L1 = exp(log(1E-3) + log(1E6)*randomU());
 	L2 = exp(log(1E-3) + log(1E6)*randomU());
-	nu1 = exp(log(0.1) + log(30./0.1)*randomU());
-	nu2 = exp(log(0.1) + log(30./0.1)*randomU());
+	nu1 = exp(log(0.1) + log(100./0.1)*randomU());
+	nu2 = exp(log(0.1) + log(100./0.1)*randomU());
 	w = randomU();
 
 	computeImage();
@@ -122,15 +122,15 @@ double GalaxyModel::perturb()
 	else if(which == 8)
 	{
 		nu1 = log(nu1);
-		nu1 += log(30./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
-		nu1 = mod(nu1 - log(0.1), log(30./0.1)) + log(0.1);
+		nu1 += log(100./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
+		nu1 = mod(nu1 - log(0.1), log(100./0.1)) + log(0.1);
 		nu1 = exp(nu1);
 	}
 	else if(which == 9)
 	{
 		nu2 = log(nu2);
-		nu2 += log(30./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
-		nu2 = mod(nu2 - log(0.1), log(30./0.1)) + log(0.1);
+		nu2 += log(100./0.1)*pow(10., 1.5 - 6.*randomU())*randn();
+		nu2 = mod(nu2 - log(0.1), log(100./0.1)) + log(0.1);
 		nu2 = exp(nu2);
 	}
 	else if(which == 10)
