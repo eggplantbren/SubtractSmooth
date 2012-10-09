@@ -51,6 +51,7 @@ void GalaxyModel::fromPrior()
 	w = randomU();
 
 	computeImage();
+
 }
 
 double GalaxyModel::perturb()
@@ -60,11 +61,18 @@ double GalaxyModel::perturb()
 
 	if(which == 0)
 	{
+		double old = rho;
+
 		rho = log(rho);
 		rho += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		rho = mod(rho - log(1E-3), log(1E6)) + log(1E-3);
 		rho = exp(rho);
-		computeImage();
+
+		double ratio = rho/old;
+		for(size_t i=0; i<image.size(); i++)
+			for(size_t j=0; j<image[i].size(); j++)
+				image[i][j] *= ratio;
+		
 	}
 	else if(which == 1)
 	{
