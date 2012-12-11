@@ -26,7 +26,8 @@
 class PointsModel:public DNest3::Model
 {
 	private:
-	
+		double xc, yc;
+		double sig;
 
 	public:
 		PointsModel();

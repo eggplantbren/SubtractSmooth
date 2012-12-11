@@ -33,12 +33,34 @@ PointsModel::PointsModel()
 
 void PointsModel::fromPrior()
 {
-
+	xc = -10. + 20.*randomU();
+	yc = -10. + 20.*randomU();
+	sig = exp(log(1E-2) + log(1E3)*randomU());
 }
 
 double PointsModel::perturb()
 {
 	double logH = 0.;
+
+	int which = randInt(3);
+	if(which == 0)
+	{
+		xc += 20.*pow(10., 1.5 - 6.*randomU())*randn();
+		xc = mod(xc + 10., 20.) - 10.;
+	}
+	else if(which == 1)
+	{
+		yc += 20.*pow(10., 1.5 - 6.*randomU())*randn();
+		yc = mod(xc + 10., 20.) - 10.;
+	}
+	else
+	{
+		sig = log(sig);
+		sig += log(1E3)*pow(10., 1.5 - 6.*randomU())*randn();
+		sig = mod(sig - log(1E-2), log(1E3)) + log(1E-2);	
+		sig = exp(sig);
+	}
+
 	return logH;
 }
 
@@ -50,11 +72,11 @@ double PointsModel::logLikelihood() const
 
 void PointsModel::print(std::ostream& out) const
 {
-
+	out<<xc<<' '<<yc<<' '<<sig;
 }
 
 string PointsModel::description() const
 {
-	return string("");
+	return string("xc, yc, sig");
 }
 
