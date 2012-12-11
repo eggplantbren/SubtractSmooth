@@ -21,6 +21,8 @@
 #include "RandomNumberGenerator.h"
 #include "Utils.h"
 #include "Data.h"
+#include <fstream>
+#include <iostream>
 #include <cmath>
 
 using namespace std;
@@ -67,7 +69,34 @@ double PointsModel::perturb()
 
 double PointsModel::logLikelihood() const
 {
-	return 0.;
+	// Load data
+	static bool loaded = false;
+	static vector<double> x, y;
+	if(!loaded)
+	{
+		cout<<"# Loading data..."<<endl;
+		fstream fin("point_data.txt", ios::in);
+		if(!fin)
+			cerr<<"# Can't load data."<<endl;
+		if(fin.peek() == '#')
+			fin.ignore(100000, '\n');
+		double temp1, temp2;
+		while(fin>>temp1 && fin>>temp2)
+		{
+			x.push_back(temp1);
+			y.push_back(temp2);
+		}
+		cout<<"# Loaded "<<x.size()<<" data points."<<endl;
+		fin.close();
+		loaded = true;
+	}
+
+	double logL = -(x.size()*log(2.*M_PI*pow(sig, 2)));
+	for(size_t i=0; i<x.size(); i++)
+	{
+		logL += -0.5*pow((x[i] - xc)/sig, 2) - 0.5*pow((y[i] - yc)/sig, 2);
+	}
+	return logL;
 }
 
 void PointsModel::print(std::ostream& out) const
