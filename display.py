@@ -1,7 +1,7 @@
 from pylab import *
 
 posterior_sample = atleast_2d(loadtxt('posterior_sample.txt'))
-data = loadtxt('data.txt')
+data = loadtxt('fake_data.txt')
 valid = data > -1E250
 
 num = 200
