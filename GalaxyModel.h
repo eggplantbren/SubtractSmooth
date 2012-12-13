@@ -28,7 +28,6 @@ class GalaxyModel:public DNest3::Model
 	private:
 		double rho;	// Central density
 		double rc;	// Scale radius
-		double rMax;	// Maximum radius
 		double gamma;	// Slope
 		double xc, yc;  // Central position
 		double q;	// Flattening
