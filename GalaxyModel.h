@@ -34,7 +34,9 @@ class GalaxyModel:public DNest3::Model
 		double theta, cosTheta, sinTheta; // Inclination
 
 		// Residual model
-		double L1, L2, nu1, nu2, w;
+		double sig; // Gaussian sd
+		double L; // Positive residual scale
+		double w;
 
 		std::vector< std::vector<double> > image;
 		void computeImage();
