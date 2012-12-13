@@ -195,7 +195,7 @@ void GalaxyModel::computeImage()
 void GalaxyModel::print(std::ostream& out) const
 {
 	out<<rho<<' '<<rc<<' '<<gamma<<' '<<xc<<' '<<yc<<' '<<q<<' '<<theta<<
-			' '<<sig<<' '<<L<<w;
+			' '<<sig<<' '<<L<<' '<<w;
 }
 
 string GalaxyModel::description() const
