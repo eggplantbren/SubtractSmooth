@@ -16,7 +16,7 @@
 #    along with DNest.  If not, see <http://www.gnu.org/licenses/>.
 
 import postprocess
-postprocess.postprocess(cut=0.333)
+postprocess.postprocess(temperature=10.)
 import display
 
 
