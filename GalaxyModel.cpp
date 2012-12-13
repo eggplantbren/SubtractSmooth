@@ -44,7 +44,9 @@ void GalaxyModel::fromPrior()
 	q = exp(randn());
 	theta = 2.*M_PI*randomU(); cosTheta = cos(theta); sinTheta = sin(theta);
 
-	sig = exp(log(1E-3) + log(1E6)*randomU());
+	sig0 = exp(log(1E-3) + log(1E6)*randomU());
+	sig1 = exp(log(1E-3) + log(1E6)*randomU());
+
 	L = exp(log(1E-3) + log(1E6)*randomU());
 	w = randomU();
 
@@ -115,10 +117,15 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 6)
 	{
-		sig = log(sig);
-		sig += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
-		sig = mod(sig - log(1E-3), log(1E6)) + log(1E-3);
-		sig = exp(sig);
+		sig0 = log(sig0);
+		sig0 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		sig0 = mod(sig0 - log(1E-3), log(1E6)) + log(1E-3);
+		sig0 = exp(sig0);
+
+		sig1 = log(sig1);
+		sig1 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		sig1 = mod(sig1 - log(1E-3), log(1E6)) + log(1E-3);
+		sig1 = exp(sig1);
 	}
 	else if(which == 7)
 	{
@@ -142,7 +149,7 @@ double GalaxyModel::logLikelihood() const
 
 	double logL = 0.;
 
-	double term1, term2, diff;
+	double term1, term2, diff, var;
 	for(size_t i=0; i<image.size(); i++)
 	{
 		for(size_t j=0; j<image[i].size(); j++)
@@ -150,8 +157,10 @@ double GalaxyModel::logLikelihood() const
 			if(Data::get_data()(i, j) > -1E250)
 			{
 				diff = Data::get_data()(i, j) - image[i][j];
-				term1 = log(w) - 0.5*log(2.*M_PI*sig*sig)
-					-0.5*pow(diff/sig, 2);
+
+				var = sig0*sig0 + sig1*image[i][j];
+				term1 = log(w) - 0.5*log(2.*M_PI*var)
+					-0.5*pow(diff, 2)/var;
 
 				if(diff < 0)
 				{
@@ -195,7 +204,7 @@ void GalaxyModel::computeImage()
 void GalaxyModel::print(std::ostream& out) const
 {
 	out<<rho<<' '<<rc<<' '<<gamma<<' '<<xc<<' '<<yc<<' '<<q<<' '<<theta<<
-			' '<<sig<<' '<<L<<' '<<w;
+			' '<<sig0<<' '<<sig1<<' '<<L<<' '<<w;
 }
 
 string GalaxyModel::description() const

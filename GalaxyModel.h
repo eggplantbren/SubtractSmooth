@@ -34,7 +34,7 @@ class GalaxyModel:public DNest3::Model
 		double theta, cosTheta, sinTheta; // Inclination
 
 		// Residual model
-		double sig; // Gaussian sd
+		double sig0, sig1; // Gaussian sd -- base and coefficient 
 		double L; // Positive residual scale
 		double w;
 
