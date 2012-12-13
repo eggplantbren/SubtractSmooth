@@ -122,7 +122,7 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 7)
 	{
-		L = log(sig);
+		L = log(L);
 		L += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L = mod(L - log(1E-3), log(1E6)) + log(1E-3);
 		L = exp(L);
