@@ -179,7 +179,7 @@ double GalaxyModel::logLikelihood() const
 					term2 += alpha*log(lambda)
 						-gsl_sf_lngamma(alpha)
 						+(alpha - 1.)*log(diff)
-						-diff/lambda;
+						-lambda*diff;
 					logL += logsumexp(term1, term2);
 				}
 
