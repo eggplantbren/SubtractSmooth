@@ -220,6 +220,6 @@ void GalaxyModel::print(std::ostream& out) const
 
 string GalaxyModel::description() const
 {
-	return string("rho, rc, gamma, xc, yc, q, theta, sig, beta, L, w");
+	return string("rho, rc, gamma, xc, yc, q, theta, sig0, sig1, beta, L, w");
 }
 
