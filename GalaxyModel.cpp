@@ -149,11 +149,12 @@ double GalaxyModel::perturb()
 	return logH;
 }
 
-
 double GalaxyModel::logLikelihood() const
 {
-
 	double logL = 0.;
+
+	double alpha = pow(beta, -2);
+	double lambda = alpha/L;
 
 	double term1, term2, diff, var;
 	for(size_t i=0; i<image.size(); i++)
@@ -174,7 +175,10 @@ double GalaxyModel::logLikelihood() const
 				}
 				else
 				{
-					term2 = log(1. - w) - log(L) - diff/L;
+					term2 = log(1. - w);
+					term2 += alpha*log(lambda)
+						-gsl_sf_lngamma(alpha)
+						-diff/lambda;
 					logL += logsumexp(term1, term2);
 				}
 
