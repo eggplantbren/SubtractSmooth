@@ -47,6 +47,7 @@ void GalaxyModel::fromPrior()
 	sig0 = exp(log(1E-3) + log(1E6)*randomU());
 	sig1 = exp(log(1E-3) + log(1E6)*randomU());
 
+	beta = 0.1 + 1.9*randomU();
 	L = exp(log(1E-3) + log(1E6)*randomU());
 	w = randomU();
 
@@ -56,7 +57,7 @@ void GalaxyModel::fromPrior()
 
 double GalaxyModel::perturb()
 {
-	int which = randInt(9);
+	int which = randInt(10);
 	double logH = 0.;
 
 	if(which == 0)
@@ -129,12 +130,17 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 7)
 	{
+		beta += 1.9*pow(10., 1.5 - 6.*randomU())*randn();
+		beta = mod(beta - 0.1, 1.9) + 0.1;
+	}
+	else if(which == 8)
+	{
 		L = log(L);
 		L += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L = mod(L - log(1E-3), log(1E6)) + log(1E-3);
 		L = exp(L);
 	}
-	else if(which == 8)
+	else if(which == 9)
 	{
 		w += pow(10., 1.5 - 6.*randomU())*randn();
 		w = mod(w, 1.);
@@ -204,11 +210,11 @@ void GalaxyModel::computeImage()
 void GalaxyModel::print(std::ostream& out) const
 {
 	out<<rho<<' '<<rc<<' '<<gamma<<' '<<xc<<' '<<yc<<' '<<q<<' '<<theta<<
-			' '<<sig0<<' '<<sig1<<' '<<L<<' '<<w;
+			' '<<sig0<<' '<<sig1<<' '<<beta<<' '<<L<<' '<<w;
 }
 
 string GalaxyModel::description() const
 {
-	return string("rho, rc, gamma, xc, yc, q, theta, sig, L, w");
+	return string("rho, rc, gamma, xc, yc, q, theta, sig, beta, L, w");
 }
 

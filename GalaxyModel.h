@@ -35,7 +35,7 @@ class GalaxyModel:public DNest3::Model
 
 		// Residual model
 		double sig0, sig1; // Gaussian sd -- base and coefficient 
-		double L; // Positive residual scale
+		double beta, L; // Positive residual shape and scale
 		double w;
 
 		std::vector< std::vector<double> > image;
