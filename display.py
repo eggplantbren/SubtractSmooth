@@ -9,20 +9,14 @@ L = 2./num
 x = linspace(-1. + 0.5*L, 1. - 0.5*L, num)
 y = x.copy()
 [x, y] = meshgrid(x, y)
-y = y[::-1]
+y = y[::-1, :]
 
 ion()
 hold(False)
 
 for i in xrange(0, posterior_sample.shape[0]):
-	rho, rc, gamma, xc, yc, q, theta = posterior_sample[i,0], posterior_sample[i,1],\
-			 posterior_sample[i,2], posterior_sample[i, 3], posterior_sample[i, 4]\
-			, posterior_sample[i, 5], posterior_sample[i, 6]
+	f = posterior_sample[i, 13:].reshape((num, num))
 
-	xx =  cos(theta)*(x - xc) + sin(theta)*(y - yc);
-	yy = -sin(theta)*(x - xc) + cos(theta)*(y - yc);
-	r = sqrt(q*xx**2 + yy**2/q);
-	f = rho*exp(-(r/rc)**gamma)
 	subplot(1,3,1)
 	imshow(data*valid)
 	title('Data')

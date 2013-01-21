@@ -228,7 +228,11 @@ void GalaxyModel::print(std::ostream& out) const
 {
 	out<<F<<' '<<rc<<' '<<xc<<' '<<yc<<' '<<q<<' '<<theta<<
 		' '<<rc_frac<<' '<<weight<<
-		' '<<sig0<<' '<<sig1<<' '<<beta<<' '<<L<<' '<<w;
+		' '<<sig0<<' '<<sig1<<' '<<beta<<' '<<L<<' '<<w<<' ';
+
+	for(size_t i=0; i<image.size(); i++)
+		for(size_t j=0; j<image[i].size(); j++)
+			out<<image[i][j]<<' ';
 }
 
 string GalaxyModel::description() const
