@@ -28,10 +28,12 @@ class GalaxyModel:public DNest3::Model
 	private:
 		double F;	// Total mass
 		double rc;	// Larger scale radius
-		double gamma;	// Slope
 		double xc, yc;  // Central position
 		double q;	// Flattening
 		double theta, cosTheta, sinTheta; // Inclination
+
+		double rc_frac; // Smaller radius in units of larger one
+		double weight;  // Weight of smaller component
 
 		// Residual model
 		double sig0, sig1; // Gaussian sd -- base and coefficient 
