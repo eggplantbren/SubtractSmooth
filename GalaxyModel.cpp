@@ -215,7 +215,7 @@ void GalaxyModel::computeImage()
 
 			xx =  cosTheta*(x - xc) + sinTheta*(y - yc);
 			yy = -sinTheta*(x - xc) + cosTheta*(y - yc);
-			rsq = sqrt(q*pow(xx, 2) + pow(yy, 2)/q);
+			rsq = q*pow(xx, 2) + pow(yy, 2)/q;
 			image[i][j] = (1. - weight)*F/(2.*M_PI*rc*rc)
 					*exp(-0.5*rsq/(rc*rc))
 					+ weight*F/(2.*M_PI*rc2*rc2)
