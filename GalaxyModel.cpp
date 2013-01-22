@@ -237,6 +237,6 @@ void GalaxyModel::print(std::ostream& out) const
 
 string GalaxyModel::description() const
 {
-	return string("rho, rc, xc, yc, q, theta, rc_frac, weight, sig0, sig1, beta, L, w");
+	return string("F, rc, xc, yc, q, theta, rc_frac, weight, sig0, sig1, beta, L, w");
 }
 

@@ -10,11 +10,11 @@ y = x.copy()
 y = y[::-1]
 r = sqrt(x**2 + y**2)
 
-rho = 1.
+F = 1.
 rc = 0.3
 gamma = 2.
 
-f = rho/(1. + r/rc)**gamma
+f = F/(2.*pi*rc**2)*exp(-0.5*(r/rc)**2)
 
 for i in xrange(0, 1000):
 	xc = -1. + 2.*rand()
@@ -23,7 +23,7 @@ for i in xrange(0, 1000):
 	f = f + 0.1*rand()*exp(-0.5*rr/0.02**2)
 
 
-f = f + 0.03*randn(num, num)
+f = f + 0.1*randn(num, num)
 savetxt('fake_data.txt', f)
 imshow(f)
 show()
