@@ -42,11 +42,11 @@ void GalaxyModel::fromPrior()
 	yc = Data::get_data().get_yMin() + Data::get_data().get_yRange();
 	q = exp(randn());
 	theta = 2.*M_PI*randomU(); cosTheta = cos(theta); sinTheta = sin(theta);
+	background = exp(log(1E-3) + log(1E6)*randomU());
 
 	rc_frac = randomU();
 	weight =  randomU();
 
-	sig0 = exp(log(1E-3) + log(1E6)*randomU());
 	sig1 = exp(log(1E-3) + log(1E6)*randomU());
 
 	beta = 0.1 + 1.9*randomU();
@@ -59,7 +59,7 @@ void GalaxyModel::fromPrior()
 
 double GalaxyModel::perturb()
 {
-	int which = randInt(11);
+	int which = randInt(12);
 	double logH = 0.;
 
 	if(which == 0)
@@ -126,29 +126,36 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 7)
 	{
-		sig0 = log(sig0);
-		sig0 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
-		sig0 = mod(sig0 - log(1E-3), log(1E6)) + log(1E-3);
-		sig0 = exp(sig0);
-
+		double diff = -background;
+		background = log(background);
+		background += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		background = mod(background - log(1E-3), log(1E6)) + log(1E-3);
+		background = exp(background);
+		diff += background;
+		for(size_t i=0; i<image.size(); i++)
+			for(size_t j=0; j<image[i].size(); j++)
+				image[i][j] += diff;
+	}
+	else if(which == 8)
+	{
 		sig1 = log(sig1);
 		sig1 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		sig1 = mod(sig1 - log(1E-3), log(1E6)) + log(1E-3);
 		sig1 = exp(sig1);
 	}
-	else if(which == 8)
+	else if(which == 9)
 	{
 		beta += 1.9*pow(10., 1.5 - 6.*randomU())*randn();
 		beta = mod(beta - 0.1, 1.9) + 0.1;
 	}
-	else if(which == 9)
+	else if(which == 10)
 	{
 		L = log(L);
 		L += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		L = mod(L - log(1E-3), log(1E6)) + log(1E-3);
 		L = exp(L);
 	}
-	else if(which == 10)
+	else if(which == 11)
 	{
 		w += pow(10., 1.5 - 6.*randomU())*randn();
 		w = mod(w, 1.);
@@ -173,7 +180,7 @@ double GalaxyModel::logLikelihood() const
 			{
 				diff = Data::get_data()(i, j) - image[i][j];
 
-				var = sig0*sig0 + sig1*image[i][j];
+				var = sig1*image[i][j];
 				term1 = log(w) - 0.5*log(2.*M_PI*var)
 					-0.5*pow(diff, 2)/var;
 
@@ -216,7 +223,7 @@ void GalaxyModel::computeImage()
 			xx =  cosTheta*(x - xc) + sinTheta*(y - yc);
 			yy = -sinTheta*(x - xc) + cosTheta*(y - yc);
 			rsq = q*pow(xx, 2) + pow(yy, 2)/q;
-			image[i][j] = (1. - weight)*F/(2.*M_PI*rc*rc)
+			image[i][j] = background + (1. - weight)*F/(2.*M_PI*rc*rc)
 					*exp(-0.5*rsq/(rc*rc))
 					+ weight*F/(2.*M_PI*rc2*rc2)
 					*exp(-0.5*rsq/(rc2*rc2));

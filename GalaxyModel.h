@@ -31,6 +31,7 @@ class GalaxyModel:public DNest3::Model
 		double xc, yc;  // Central position
 		double q;	// Flattening
 		double theta, cosTheta, sinTheta; // Inclination
+		double background;
 
 		double rc_frac; // Smaller radius in units of larger one
 		double weight;  // Weight of smaller component
