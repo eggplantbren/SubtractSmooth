@@ -47,6 +47,7 @@ void GalaxyModel::fromPrior()
 	rc_frac = randomU();
 	weight =  randomU();
 
+	sig0 = exp(log(1E-3) + log(1E6)*randomU());
 	sig1 = exp(log(1E-3) + log(1E6)*randomU());
 
 	beta = 0.1 + 1.9*randomU();
@@ -138,6 +139,11 @@ double GalaxyModel::perturb()
 	}
 	else if(which == 8)
 	{
+		sig0 = log(sig0);
+		sig0 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		sig0 = mod(sig0 - log(1E-3), log(1E6)) + log(1E-3);
+		sig0 = exp(sig0);
+
 		sig1 = log(sig1);
 		sig1 += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
 		sig1 = mod(sig1 - log(1E-3), log(1E6)) + log(1E-3);
@@ -180,7 +186,7 @@ double GalaxyModel::logLikelihood() const
 			{
 				diff = Data::get_data()(i, j) - image[i][j];
 
-				var = sig1*image[i][j];
+				var = sig0*sig0 + sig1*image[i][j];
 				term1 = log(w) - 0.5*log(2.*M_PI*var)
 					-0.5*pow(diff, 2)/var;
 
